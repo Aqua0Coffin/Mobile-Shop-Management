@@ -1,4 +1,4 @@
-# Mobile Shop Management System Documentation
+# Mobile Shop Management System
 
 The Mobile Shop Management System is a Python-based application that allows users to manage inventory and sales data for a mobile shop. The system provides a simple command-line interface that offers various functionalities to perform tasks related to inventory and sales management.
 
