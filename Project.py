@@ -6,23 +6,29 @@ INVENTORY_FILE = r"C:\Inventory Data.csv"
 SALES_FILE = r"C:\Sales Data.csv"
 
 def main_menu():
-    print("Welcome to the Mobile Shop Management System!")
-    print("Please select an option:")
-    print("1. View inventory")
-    print("2. Add new product to inventory")
-    print("3. Update product information")
-    print("4. Delete product from inventory")
-    print("5. View sales history")
-    print("6. Generate sales report")
-    print("7. View sales by product")
-    print("8. View sales by date")
-    print("9. View sales by customer")
-   # print("10. View sales by employee")
-    print("11. Generate bar chart of sales by product")
-    print("12. Generate pie chart of sales by customer")
-    print("13. Generate line graph of sales by date")
-    #print("14. Generate scatter plot of sales by employee")
-    print("15. Exit")
+    print('')
+    print("╔══════════════════════════════════════════════╗")
+    print("║ Welcome to the Mobile Shop Management        ║")
+    print("║                System !                      ║")
+    print("╠══════════════════════════════════════════════╣")
+    print("║ Please select an option:                     ║")
+    print("║ 1. View inventory                            ║")
+    print("║ 2. Add new product to inventory              ║")
+    print("║ 3. Update product information                ║")
+    print("║ 4. Delete product from inventory             ║")
+    print("║ 5. View sales history                        ║")
+    print("║ 6. Generate sales report                     ║")
+    print("║ 7. View sales by product                     ║")
+    print("║ 8. View sales by date                        ║")
+    print("║ 9. View sales by customer                    ║")
+    print("║ 10. Generate bar chart of sales by product   ║")
+    print("║     by product                               ║")
+    print("║ 11. Generate pie chart of sales by customer  ║")
+    print("║     by customer                              ║")
+    print("║ 12. Generate line graph of sales by date     ║")
+    print("║ 13. Exit                                     ║")
+    print("╚══════════════════════════════════════════════╝")
+
 
     choice = input("Enter your choice: ")
 
@@ -45,16 +51,12 @@ def main_menu():
     elif choice == "9":
         view_sales_by_customer()
     elif choice == "10":
-        view_sales_by_employee()
-    elif choice == "11":
         generate_sales_bar_chart()
-    elif choice == "12":
+    elif choice == "11":
         generate_sales_pie_chart()
-    elif choice == "13":
+    elif choice == "12":
         generate_sales_line_graph()
-    elif choice == "14":
-        generate_sales_scatter_plot()
-    elif choice == "15":
+    elif choice == "13":
         exit()
     else:
         print("Invalid choice. Please try again.")
@@ -84,37 +86,30 @@ def add_product():
 
 def update_product():
     inventory_data = pd.read_csv(INVENTORY_FILE)
-    product_id = input("Enter product ID to update: ")
-    product = inventory_data.loc[inventory_data["Product ID"] == product_id]
-    product_id = input("Enter product ID to update: ")
-    product = inventory_data.query("Product ID == @product_id")
-    if product.empty:
+    product_id = int(input("Enter product ID to update: "))
+    if product_id in inventory_data["Product ID"].values:
+        product_name = input("Enter new product name: ")
+        description = input("Enter new product description: ")
+        price = input("Enter new product price: ")
+        quantity = input("Enter new product quantity: ")
+        inventory_data.loc[inventory_data["Product ID"] == product_id, "Product Name"] = product_name
+        inventory_data.loc[inventory_data["Product ID"] == product_id, "Description"] = description
+        inventory_data.loc[inventory_data["Product ID"] == product_id, "Price"] = price
+        inventory_data.loc[inventory_data["Product ID"] == product_id, "Quantity"] = quantity
+        inventory_data.to_csv(INVENTORY_FILE, index=False)
+        print("Product updated successfully.") 
+    else:
         print("Product not found.")
-        return
-    print("Current product information:")
-    print(product)
-    new_product_name = input("Enter new product name (leave blank to keep current value): ")
-    new_description = input("Enter new product description (leave blank to keep current value): ")
-    new_price = input("Enter new product price (leave blank to keep current value): ")
-    new_quantity = input("Enter new product quantity (leave blank to keep current value): ")
-    if new_product_name != "":
-        inventory_data.loc[inventory_data["Product ID"] == product_id, "Product Name"] = new_product_name
-    if new_description != "":
-        inventory_data.loc[inventory_data["Product ID"] == product_id, "Description"] = new_description
-    if new_price != "":
-        inventory_data.loc[inventory_data["Product ID"] == product_id, "Price"] = new_price
-    if new_quantity != "":
-        inventory_data.loc[inventory_data["Product ID"] == product_id, "Quantity"] = new_quantity
-    inventory_data.to_csv(INVENTORY_FILE, index=False)
-    print("Product updated successfully.")
-
+         
 def delete_product():
     inventory_data = pd.read_csv(INVENTORY_FILE)
-    product_id = input("Enter product ID to delete: ")
-    inventory_data = inventory_data[inventory_data["Product ID"] != product_id]
-    inventory_data.to_csv(INVENTORY_FILE, index=False)
-    print("Product deleted successfully.")
-
+    product_id = int(input("Enter product ID to delete: "))
+    if product_id in inventory_data["Product ID"].values:
+        inventory_data = inventory_data[inventory_data["Product ID"] != product_id]
+        inventory_data.to_csv(INVENTORY_FILE, index=False)
+        print("Product deleted successfully.")
+    else:
+        print("Product not found.")
 def view_sales_history():
     sales_data = pd.read_csv(SALES_FILE)
     print(sales_data)
@@ -150,11 +145,6 @@ def view_sales_by_customer():
     sales_by_customer = sales_data.groupby("Customer Name")["Quantity"].sum()
     print(sales_by_customer)
 
-#def view_sales_by_employee():
-#    sales_data = pd.read_csv(SALES_FILE)
-#    sales_by_employee = sales_data.groupby("Employee Name")["Quantity"].sum()
-#    print(sales_by_employee)
-
 def generate_sales_bar_chart():
     sales_data = pd.read_csv(SALES_FILE)
     inventory_data = pd.read_csv(INVENTORY_FILE)
@@ -186,17 +176,5 @@ def generate_sales_line_graph():
     plt.ylabel("Sales")
     plt.show()
 
-#def generate_sales_scatter_plot():
-#    sales_data = pd.read_csv(SALES_FILE)
-#    sales_by_employee = sales_data.groupby("Employee Name").agg({
-#        "Quantity": "sum",
-#        "Price": "mean"
-#    })
-#    sales_by_employee.plot(kind="scatter", x="Quantity", y="Price")
-#    plt.title("Sales by Employee")
-#    plt.xlabel("Quantity")
-#    plt.ylabel("Price")
-#    plt.show()
-#
 while True:
     main_menu()
